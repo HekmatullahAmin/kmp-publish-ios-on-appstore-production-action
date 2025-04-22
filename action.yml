@@ -92,7 +92,7 @@ runs:
           git_url:${{ env.GIT_URL }} \
           git_branch:${{ env.GIT_BRANCH }} \
           match_type:${{ env.MATCH_TYPE }} \
-          provisioning_profile_name:${{ env.PROVISIONING_PROFILE_NAME }}
+          provisioning_profile_name:${{ env.PROVISIONING_PROFILE_NAME }} \
           appstore_key_id:${{ env.APPSTORE_KEY_ID }} \
           appstore_issuer_id:${{ env.APPSTORE_ISSUER_ID }} \
           match_password:${{ env.MATCH_PASSWORD }} \
