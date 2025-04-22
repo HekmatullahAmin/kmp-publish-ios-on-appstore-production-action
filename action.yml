@@ -22,6 +22,10 @@ inputs:
     required: true
     description: 'Type of provisioning profile to fetch using Match (e.g., adhoc, appstore, development)'
 
+  provisioning_profile_name:
+    required: true
+    description: 'Name of the provisioning profile to use for code signing (e.g., match AdHoc com.example.app or match AppStore com.example.app)'
+
   appstore_key_id:
     required: true
     description: 'Key ID from App Store Connect API Key'
@@ -76,6 +80,7 @@ runs:
         GIT_URL: ${{ inputs.git_url }}
         GIT_BRANCH: ${{ inputs.git_branch }}
         MATCH_TYPE: ${{ inputs.match_type }}
+        PROVISIONING_PROFILE_NAME: ${{ inputs.provisioning_profile_name }}
         APPSTORE_KEY_ID: ${{ inputs.appstore_key_id }}
         APPSTORE_ISSUER_ID: ${{ inputs.appstore_issuer_id }}
         MATCH_PASSWORD: ${{ inputs.match_password }}
@@ -87,6 +92,7 @@ runs:
           git_url:${{ env.GIT_URL }} \
           git_branch:${{ env.GIT_BRANCH }} \
           match_type:${{ env.MATCH_TYPE }} \
+          provisioning_profile_name:${{ env.PROVISIONING_PROFILE_NAME }}
           appstore_key_id:${{ env.APPSTORE_KEY_ID }} \
           appstore_issuer_id:${{ env.APPSTORE_ISSUER_ID }} \
           match_password:${{ env.MATCH_PASSWORD }} \
