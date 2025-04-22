@@ -61,11 +61,9 @@ runs:
 
     # Inflate .p8 private key from base64
     - name: Set up API key file
-      env:
-        APPSTORE_AUTH_KEY: ${{ inputs.appstore_auth_key }}
       run: |
         mkdir -p secrets
-        echo ${{ env.APPSTORE_AUTH_KEY }} | base64 --decode > secrets/Auth_key.p8
+        echo "${{ inputs.appstore_private_key }}" | base64 --decode > secrets/Auth_key.p8
       shell: bash
 
     # Run Fastlane lane to deploy to TestFlight
