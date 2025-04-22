@@ -6,10 +6,6 @@ branding:
   color: blue
 
 inputs:
-  username:
-    required: true
-    description: 'Apple Developer Portal username (Apple ID email)'
-
   app_identifier:
     required: true
     description: 'The unique bundle identifier for the iOS application'
@@ -76,7 +72,6 @@ runs:
     - name: Run Fastlane beta lane
       shell: bash
       env:
-        USERNAME: ${{ inputs.username }}
         APP_IDENTIFIER: ${{ inputs.app_identifier }}
         GIT_URL: ${{ inputs.git_url }}
         GIT_BRANCH: ${{ inputs.git_branch }}
@@ -88,7 +83,6 @@ runs:
 
       run: |
         bundle exec fastlane ios beta \
-          username:${{ env.USERNAME }} \
           app_identifier:${{ env.APP_IDENTIFIER }} \
           git_url:${{ env.GIT_URL }} \
           git_branch:${{ env.GIT_BRANCH }} \
