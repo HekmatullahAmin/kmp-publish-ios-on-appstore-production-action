@@ -60,10 +60,12 @@ runs:
         bundler install --jobs 4 --retry 3
 
     # Inflate .p8 private key from base64
-    - name: Set up API key file
+    - name: Set up Auth key file
+      env:
+        AUTH_KEY: ${{ inputs.appstore_auth_key }}
       run: |
         mkdir -p secrets
-        echo "${{ inputs.appstore_auth_key }}" | base64 --decode > secrets/Auth_key.p8
+        echo ${{ env.AUTH_KEY }} | base64 --decode > secrets/Auth_key.p8
       shell: bash
 
     # Run Fastlane lane to deploy to TestFlight
