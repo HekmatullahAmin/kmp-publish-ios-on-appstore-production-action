@@ -34,7 +34,7 @@ inputs:
     required: true
     description: 'Issuer ID from App Store Connect API Key'
 
-  appstore_private_key:
+  appstore_auth_key:
     required: true
     description: 'Base64-encoded contents of the .p8 private key file'
 
@@ -65,9 +65,11 @@ runs:
 
     # Inflate .p8 private key from base64
     - name: Set up API key file
+      env:
+        APPSTORE_AUTH_KEY: ${{ inputs.appstore_auth_key }}
       run: |
         mkdir -p secrets
-        echo "${{ inputs.appstore_auth_key }}" | base64 --decode > secrets/Auth_key.p8
+        echo ${{ env.APPSTORE_AUTH_KEY }} | base64 --decode > secrets/Auth_key.p8
       shell: bash
 
     # Run Fastlane lane to deploy to TestFlight
@@ -79,7 +81,6 @@ runs:
         GIT_URL: ${{ inputs.git_url }}
         GIT_BRANCH: ${{ inputs.git_branch }}
         MATCH_TYPE: ${{ inputs.match_type }}
-
         APPSTORE_KEY_ID: ${{ inputs.appstore_key_id }}
         APPSTORE_ISSUER_ID: ${{ inputs.appstore_issuer_id }}
         MATCH_PASSWORD: ${{ inputs.match_password }}
