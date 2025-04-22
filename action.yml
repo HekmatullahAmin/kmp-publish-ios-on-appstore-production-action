@@ -6,25 +6,45 @@ branding:
   color: blue
 
 inputs:
-  appstore-key-id:
+  username:
     required: true
-    description: Key ID from App Store Connect API Key
+    description: 'Apple Developer Portal username (Apple ID email)'
 
-  appstore-issuer-id:
+  app_identifier:
     required: true
-    description: Issuer ID from App Store Connect API Key
+    description: 'The unique bundle identifier for the iOS application'
 
-  appstore-private-key:
+  git_url:
     required: true
-    description: Base64-encoded contents of the .p8 private key file
+    description: 'Git URL to the private repository containing certificates and provisioning profiles for code signing (used by Fastlane Match)'
 
-  match-password:
+  git_branch:
     required: true
-    description: Password used to encrypt/decrypt the certificates repository used by match
+    description: 'Branch name inside the certificates repository that Fastlane Match should use to fetch signing assets'
 
-  match-git-basic-authorization:
+  match_type:
     required: true
-    description: Base64-encoded GitHub Basic Auth token used by Fastlane Match to authenticate and securely clone the code signing certificates repository
+    description: 'Type of provisioning profile to fetch using Match (e.g., adhoc, appstore, development)'
+
+  appstore_key-id:
+    required: true
+    description: 'Key ID from App Store Connect API Key'
+
+  appstore_issuer_id:
+    required: true
+    description: 'Issuer ID from App Store Connect API Key'
+
+  appstore_private_key:
+    required: true
+    description: 'Base64-encoded contents of the .p8 private key file'
+
+  match_password:
+    required: true
+    description: 'Password used to encrypt/decrypt the certificates repository used by match'
+
+  match_git_basic_authorization:
+    required: true
+    description: 'Base64-encoded GitHub Basic Auth token used by Fastlane Match to authenticate and securely clone the code signing certificates repository'
 
 runs:
   using: composite
@@ -47,22 +67,33 @@ runs:
     - name: Set up API key file
       run: |
         mkdir -p secrets
-        echo "${{ inputs.appstore-private-key }}" | base64 --decode > secrets/Api_key.p8
+        echo "${{ inputs.appstore_auth_key }}" | base64 --decode > secrets/Auth_key.p8
       shell: bash
 
     # Run Fastlane lane to deploy to TestFlight
     - name: Run Fastlane beta lane
       shell: bash
       env:
-        APPSTORE_KEY_ID: ${{ inputs.appstore-key-id }}
-        APPSTORE_ISSUER_ID: ${{ inputs.appstore-issuer-id }}
-        MATCH_PASSWORD: ${{ inputs.match-password }}
-        MATCH_GIT_BASIC_AUTHORIZATION: ${{ inputs.match-git-basic-authorization }}
+        USERNAME: ${{ inputs.username }}
+        APP_IDENTIFIER: ${{ inputs.app_identifier }}
+        GIT_URL: ${{ inputs.git_url }}
+        GIT_BRANCH: ${{ inputs.git_branch }}
+        MATCH_TYPE: ${{ inputs.match_type }}
+
+        APPSTORE_KEY_ID: ${{ inputs.appstore_key_id }}
+        APPSTORE_ISSUER_ID: ${{ inputs.appstore_issuer_id }}
+        MATCH_PASSWORD: ${{ inputs.match_password }}
+        MATCH_GIT_BASIC_AUTHORIZATION: ${{ inputs.match_git_basic_authorization }}
 
       run: |
         bundle exec fastlane ios beta \
+          username:${{ env.USERNAME }} \
+          app_identifier:${{ env.APP_IDENTIFIER }} \
+          git_url:${{ env.GIT_URL }} \
+          git_branch:${{ env.GIT_BRANCH }} \
+          match_type:${{ env.MATCH_TYPE }} \
           appstore_key_id:${{ env.APPSTORE_KEY_ID }} \
           appstore_issuer_id:${{ env.APPSTORE_ISSUER_ID }} \
           match_password:${{ env.MATCH_PASSWORD }} \
           match_git_basic_authorization:${{ env.MATCH_GIT_BASIC_AUTHORIZATION }} \
-          key_filepath:secrets/Api_key.p8
+          key_filepath:secrets/Auth_key.p8
