@@ -26,7 +26,7 @@ inputs:
     required: true
     description: 'Type of provisioning profile to fetch using Match (e.g., adhoc, appstore, development)'
 
-  appstore_key-id:
+  appstore_key_id:
     required: true
     description: 'Key ID from App Store Connect API Key'
 
