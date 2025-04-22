@@ -63,7 +63,7 @@ runs:
     - name: Set up API key file
       run: |
         mkdir -p secrets
-        echo "${{ inputs.appstore_private_key }}" | base64 --decode > secrets/Auth_key.p8
+        echo "${{ inputs.appstore_auth_key }}" | base64 --decode > secrets/Auth_key.p8
       shell: bash
 
     # Run Fastlane lane to deploy to TestFlight
