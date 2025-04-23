@@ -42,9 +42,9 @@ inputs:
     required: true
     description: 'Password used to encrypt/decrypt the certificates repository used by match'
 
-  match_git_basic_authorization:
+  match_ssh_private_key:
     required: true
-    description: 'Base64-encoded GitHub Basic Auth token used by Fastlane Match to authenticate and securely clone the code signing certificates repository'
+    description: 'SSH private key for accessing the certificates repository'
 
 runs:
   using: composite
@@ -62,6 +62,17 @@ runs:
       run: |
         gem install bundler
         bundler install --jobs 4 --retry 3
+
+    - name: Set up SSH for Match
+      shell: bash
+      env:
+        MATCH_SSH_PRIVATE_KEY: ${{ inputs.match_ssh_private_key }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$MATCH_SSH_PRIVATE_KEY" > ~/.ssh/match_ci_key
+        chmod 600 ~/.ssh/match_ci_key
+        ssh-keychain github.com >> ~/.ssh/known_hosts
+        echo -e "Host github.com\n  IdentityFile ~/.ssh/match_ci_key\n  StrictHostKeyChecking no" >> ~/.ssh/config
 
     # Inflate .p8 private key from base64
     - name: Set up Auth key file
@@ -84,7 +95,6 @@ runs:
         APPSTORE_KEY_ID: ${{ inputs.appstore_key_id }}
         APPSTORE_ISSUER_ID: ${{ inputs.appstore_issuer_id }}
         MATCH_PASSWORD: ${{ inputs.match_password }}
-        MATCH_GIT_BASIC_AUTHORIZATION: ${{ inputs.match_git_basic_authorization }}
 
       run: |
         bundle exec fastlane ios beta \
@@ -96,5 +106,6 @@ runs:
           appstore_key_id:${{ env.APPSTORE_KEY_ID }} \
           appstore_issuer_id:${{ env.APPSTORE_ISSUER_ID }} \
           match_password:${{ env.MATCH_PASSWORD }} \
+          git_private_key:~/.ssh/match_ci_key \
           match_git_basic_authorization:${{ env.MATCH_GIT_BASIC_AUTHORIZATION }} \
           key_filepath:secrets/Auth_key.p8
