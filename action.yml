@@ -69,7 +69,7 @@ runs:
         MATCH_SSH_PRIVATE_KEY: ${{ inputs.match_ssh_private_key }}
       run: |
         mkdir -p ~/.ssh
-        echo ${{ env.MATCH_SSH_PRIVATE_KEY }} | base64 --decode > ~/.ssh/match_ci_key
+        echo "$MATCH_SSH_PRIVATE_KEY" > ~/.ssh/match_ci_key
         chmod 600 ~/.ssh/match_ci_key
         ssh-keyscan github.com >> ~/.ssh/known_hosts
         echo -e "Host github.com\n  IdentityFile ~/.ssh/match_ci_key\n  StrictHostKeyChecking no" >> ~/.ssh/config  
