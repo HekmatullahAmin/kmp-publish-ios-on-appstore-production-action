@@ -200,47 +200,47 @@ Add secrets/Api_key.p8 to .gitignore (probably it will directly be added in `.gi
 <hr data-start="378" data-end="381" class="">
 
 ## 11. Step-by-Step: SSH Setup for Fastlane Match
-1. Generate SSH Key Locally
+1. Generate SSH Key Locally<br>
 In your terminal, run:
-```yaml
-ssh-keygen -t ed25519 -C "your_email@example.com"
-```
-It will ask for a file path. Press enter a custom path like:
-```yaml
-~/.ssh/match_ci_key
-```
-You can skip setting a passphrase when prompted (just hit enter twice).
+   ```yaml
+  ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+   It will ask for a file path. Press enter a custom path like:
+   ```yaml
+  ~/.ssh/match_ci_key
+   ```
+   You can skip setting a passphrase when prompted (just hit enter twice).
 
-This generates two files:
+   This generates two files:
 
-   - `~/.ssh/match_ci_key` → Private key
+      - `~/.ssh/match_ci_key` → Private key
 
-   - `~/.ssh/match_ci_key.pub` → Public key
+     - `~/.ssh/match_ci_key.pub` → Public key
 
 2. Add the Private Key to the SSH Agent (optional but helpful)
 This step ensures the key is used during local development.
-```yaml
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/match_ci_key
-```
+   ```yaml
+   eval "$(ssh-agent -s)"
+   ssh-add ~/.ssh/match_ci_key
+   ```
 3. Add the Public Key to Your Certificates Repo (GitHub)
 - Go to your certificates repo on GitHub (e.g., openMF/ios-provisioning-profile).
 - Go to Settings → Deploy Keys.
 - Click “Add deploy key”.
 - Set title as `CI Match SSH Key` and paste the content of:
 
-```yaml
-cat ~/.ssh/match_ci_key.pub
-```
-- Check ** Allow write access **.
+   ```yaml
+   cat ~/.ssh/match_ci_key.pub
+   ```
+- Check **Allow write access**.
 - Click Add key.
 
 4. Convert the Private Key to Base64
 This is how we pass it to GitHub Actions securely.
-```yaml
-base64 -i ~/.ssh/match_ci_key | pbcopy
-```
-This command copies the base64-encoded private key to your clipboard (macOS).
+   ```yaml
+   base64 -i ~/.ssh/match_ci_key | pbcopy
+   ```
+   This command copies the base64-encoded private key to your clipboard (macOS).
 
 5. Save the Private Key as a GitHub Secret
 - Go to the repo with your Fastfile (the project repo, not the certs repo).
@@ -249,7 +249,7 @@ This command copies the base64-encoded private key to your clipboard (macOS).
   - Name: MATCH_SSH_PRIVATE_KEY
   - Value: Paste the base64-encoded private key
 
-## 11. Fastfile
+## 12. Fastfile
 ```yaml
 default_platform(:ios)
 
@@ -321,7 +321,7 @@ end
 
 <hr data-start="378" data-end="381" class="">
 
-## 12. Test Locally
+## 13. Test Locally
 ```
 bundle exec fastlane ios beta
 ```
